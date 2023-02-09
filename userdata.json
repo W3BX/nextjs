@@ -1,0 +1,40 @@
+{
+    "users": [
+      {
+        "id": "1",
+        "name": "john doe"
+      },
+      {
+        "id": "2",
+        "name": "paterick baetman"
+      },
+      {
+        "id": "3",
+        "name": "adarsh singh"
+      },
+      {
+        "id": "4",
+        "name": "Andrew peterson"
+      },
+      {
+        "id": "5",
+        "name": "thomas shelby"
+      },
+      {
+        "id": "6",
+        "name": "Sigma male"
+      },
+      {
+        "id": "7",
+        "name": "shinchan nohara"
+      },
+      {
+        "id": "8",
+        "name": "carryminati"
+      },
+      {
+        "id": "9",
+        "name": "lord punnet"
+      }
+    ]
+  }
