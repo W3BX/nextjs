@@ -6,7 +6,7 @@ import { startChat } from "@/redux/slice/userslice"
 
 type Props = {}
 
-const userlist = (props: Props) => {
+const Userlist = (props: Props) => {
   const dispatch = useDispatch()
   return (
     <>
@@ -26,4 +26,4 @@ const userlist = (props: Props) => {
   )
 }
 
-export default userlist
+export default Userlist
