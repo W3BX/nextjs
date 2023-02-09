@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from "react-redux"
 import { GiBatWing } from "react-icons/gi"
 type Props = {}
 
-const chatbox = (props: Props) => {
+const Chatbox = (props: Props) => {
     const userid = useSelector((state: any) => state.userid)
 
     return (
@@ -39,4 +39,4 @@ const chatbox = (props: Props) => {
     )
 }
 
-export default chatbox
+export default Chatbox
