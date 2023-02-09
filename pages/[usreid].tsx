@@ -4,18 +4,8 @@ type Props = {}
 
 const usreid = (props: Props) => {
 
-  const router = useRouter()
-  const [id, setid] = useState()
-
-  useEffect(() => {
-    if (router.isReady) {
-      setid(router.query.usreid)
-    }
-  }, [router])
-
-
   return (
-    <h1 style={{ color: 'black' }}>my {id}</h1>
+    <h1 style={{ color: 'black' }}>my</h1>
   )
 }
 
