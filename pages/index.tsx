@@ -12,9 +12,10 @@ import cookie from "cookie"
 
 
 export default function Home(props: any) {
+  conMongo()
+
   const { loguser } = props
   const { user } = loguser
-
   const userlogin = useSelector((state: any) => state.userid)
   const dispatch = useDispatch()
 
@@ -91,14 +92,14 @@ export async function getServerSideProps(context: any) {
 
   const cookies = cookie.parse(context.req.headers.cookie || '');
   //Esatablishing mongo connection
-  conMongo()
+
   let fetUsers: any = {}
   //checkauth
   if (cookies) {
-    //fetUsers = await client.post('/tokenLogin', { token: cookies.usertoken })
+    fetUsers = await client.post('/tokenLogin', { token: cookies.usertoken })
   }
 
 
-  return { props: { loguser: "fetUsers.data" } }
+  return { props: { loguser: fetUsers.data } }
 }
 
