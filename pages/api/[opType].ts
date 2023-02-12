@@ -1,9 +1,11 @@
 import User from "@/databse/models/user"
+import conMongo from "@/databse/conn"
 import { getCookie, setCookie, getCookies, deleteCookie } from "cookies-next"
 export default async function handler(req: any, res: any) {
-
-    res.setHeader('Access-Control-Allow-Origin', '*');
+    conMongo()
     
+    res.setHeader('Access-Control-Allow-Origin', '*');
+
     let response: any = {
         msg: '',
         status: 200,

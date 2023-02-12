@@ -3,7 +3,6 @@ import Chatbox from "@/components/chatbox"
 import Userlist from "@/components/userlist"
 import Head from "next/head"
 import client from "@/databse/axious"
-import conMongo from "@/databse/conn"
 import fetchapi from "@/pages/api/fetch"
 import Modal from "@/components/modal"
 import { useDispatch, useSelector } from "react-redux"
@@ -12,7 +11,7 @@ import cookie from "cookie"
 
 
 export default function Home(props: any) {
-  conMongo()
+
 
   const { loguser } = props
   const { user } = loguser
