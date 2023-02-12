@@ -1,16 +1,22 @@
 import mongoose from "mongoose";
 
+const conn = {}
+
 const connMongoose = async () => {
     try {
-    const { connection } =  await mongoose.connect(process.env.MONGO)
 
-    if(connection.readyState == 1){
-        console.log('connected')
-    }else{
-        console.log('not connected')
-    }
+        if (conn.isConnected) return
 
-    //return connection.readyState
+        const { connection } = await mongoose.connect(process.env.MONGO)
+
+        if (connection.readyState == 1) {
+            console.log('connected')
+            conn.isConnected = connection.readyState
+        } else {
+            console.log('not connected')
+        }
+
+        //return connection.readyState
 
     } catch (err) {
         console.log(err)

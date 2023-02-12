@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import fetchapi from "@/pages/api/fetch"
 import { loginUser } from "@/redux/slice/userslice"
 import { useDispatch, useSelector } from "react-redux"
@@ -14,9 +14,15 @@ const Modal = (props: Props) => {
     const dispatch = useDispatch()
     const [username, setusername] = useState('')
     const [password, setpassword] = useState('')
+    const [errorMsg, seterrorMsg] = useState('')
+
+    useEffect(() => {
+        seterrorMsg('')
+    }, [username, password])
+
 
     const submit = async (e: any) => {
-
+        seterrorMsg('')
         const saveUser = await fetchapi(`loginUser`, { un: username, pss: password })
         if (saveUser.status == 200) {
 
@@ -26,6 +32,9 @@ const Modal = (props: Props) => {
             setusername('')
             setpassword('')
             setmodal(false)
+
+        } else if (saveUser.status == 400) {
+            seterrorMsg(saveUser.msg)
         }
     }
 
@@ -48,6 +57,8 @@ const Modal = (props: Props) => {
                 <br />
                 <input name="submit" type="submit" disabled={!username || !password} className={`border px-4 py-2 mx-auto my-4 cursor-pointer bg-black text-white ${!username || !password ? 'opacity-50 cursor-not-allowed' : 'opacity-1'}`} onClick={(e) => submit(e)} />
                 <br />
+                {errorMsg && <><span className="text-rose-700">{errorMsg}</span><br /></>}
+                
                 <span className="font-sans text-sm select-none">
                     No need to register just enter any username & password
                     <br />

@@ -1,41 +1,65 @@
 import User from "@/databse/models/user"
 import conMongo from "@/databse/conn"
-import { getCookie, setCookie, getCookies, deleteCookie } from "cookies-next"
+import { getCookie, setCookie, getCookies, deleteCookie, hasCookie } from "cookies-next"
+import mongoose from "mongoose";
 export default async function handler(req: any, res: any) {
     conMongo()
-    
+
     res.setHeader('Access-Control-Allow-Origin', '*');
 
     let response: any = {
         msg: '',
         status: 200,
         data: [],
-        user: ''
+        name: ''
     }
 
     const { opType } = req.query
     const { value, un, pss, uID, token } = req.body
 
+    //searchUsers
     if (opType == 'searchUser') {
         const findUser = await User.find({ $or: [{ 'name': { $regex: value, $options: "i" } }, { 'uID': { $regex: value, $options: "i" } }] })
         response.data = findUser
     }
 
+    //Login users if token avaliable
     if (opType == 'tokenLogin') {
         if (token) {
             const userfind = await User.findOne({ "uID": token })
-            response.user = userfind.name
+            if (userfind) {
+                response.user = userfind.name
+            } else {
+                response.status = 400
+                response.msg = 'User not logged in/ Another device log in'
+            }
+
         } else {
             response.status = 400
             response.msg = 'User not logged in'
         }
     }
 
+    //LogoutUsers
     if (opType == 'tokenLogout') {
-        deleteCookie('usertoken', { req, res })
+
+        if (hasCookie('usertoken'), { req, res }) {
+            const getcookie = getCookie('usertoken', { req, res })
+            const tokenUpdated = await User.updateOne({ "uID": getcookie },
+                {
+                    $set: {
+                        loggedIn: false
+                    }
+                })
+
+            if (tokenUpdated) {
+                deleteCookie('usertoken', { req, res })
+            }
+        }
         res.msg = 'userloggedout'
     }
 
+    //login user if not exits register and then login
     if (opType == 'loginUser') {
 
         const userfind = await User.findOne({ "name": un })
@@ -48,26 +72,31 @@ export default async function handler(req: any, res: any) {
         } else {
             if (!userfind) {
 
-                const usersave = new User({ name: un, password: pss, uID: uID })
+                const usersave = new User({ name: un, password: pss, uID: uID, loggedIn: true })
                 const save = await usersave.save()
-                response.user = save.name
+                response.name = save.name
                 response.msg = 'User registered and ready to login'
                 setCookie('usertoken', uID, { req, res, maxAge: 1000 * 60 * 15, httpOnly: true })
 
             } else if (userfind.password == pss) {
-                response.msg = 'Ready to login'
-                setCookie('usertoken', uID, { req, res, maxAge: 1000 * 60 * 15, httpOnly: true })
-                const tokenUpdated = await User.updateOne({ "name": userfind.name },
-                    {
-                        $set: {
-                            uID: uID
-                        }
-                    })
-                response.name = userfind.name
+                if (userfind.loggedIn) {
+                    response.status = 400
+                    response.msg = 'Sorry this user is aleary logged-in'
+                } else {
+                    response.msg = 'Ready to login'
+                    setCookie('usertoken', uID, { req, res, maxAge: 1000 * 60 * 15, httpOnly: true })
+                    const tokenUpdated = await User.updateOne({ "name": userfind.name },
+                        {
+                            $set: {
+                                uID: uID,
+                                loggedIn: true
+                            }
+                        })
+                    response.name = userfind.name
+                }
             }
         }
     }
 
     res.send({ ...response })
-
 }
