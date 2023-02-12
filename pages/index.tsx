@@ -14,7 +14,7 @@ import cookie from "cookie"
 export default function Home(props: any) {
   const { loguser } = props
   const { user } = loguser
- 
+
   const userlogin = useSelector((state: any) => state.userid)
   const dispatch = useDispatch()
 
@@ -95,10 +95,10 @@ export async function getServerSideProps(context: any) {
   let fetUsers: any = {}
   //checkauth
   if (cookies) {
-    fetUsers = await client.post('/tokenLogin', { token: cookies.usertoken })
+    //fetUsers = await client.post('/tokenLogin', { token: cookies.usertoken })
   }
 
 
-  return { props: { loguser: fetUsers.data } }
+  return { props: { loguser: "fetUsers.data" } }
 }
 
