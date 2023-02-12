@@ -2,6 +2,7 @@ import React from 'react'
 import Image from 'next/image'
 import { useSelector, useDispatch } from "react-redux"
 import { GiBatWing } from "react-icons/gi"
+
 type Props = {}
 
 const Chatbox = (props: Props) => {
@@ -9,14 +10,16 @@ const Chatbox = (props: Props) => {
 
     return (
         <>
-            <div className='container relative'>
-                {Object.keys(userid).length == 0 ?
-                    <div className='absolute text-center top-[30vh] left-[25vh]'>
-                        <span className='flex text-[3rem]'>
-                            Welcome to  <GiBatWing />Chatbat<GiBatWing style={{ transform: "scaleX(-1)" }} />
-                        </span>
-                        <span>This is a NEXTjs project with basic implemation.</span><br/>
-                        <span>Click on any user to chat</span>
+            <div className='container'>
+                {true ?
+                    <div className='flex items-center justify-center h-[80vh]'>
+                        <div  className='text-center'>
+                            <span className='flex text-[3rem] '>
+                                Welcome to  <GiBatWing />Chatbat<GiBatWing style={{ transform: "scaleX(-1)" }} />
+                            </span>
+                            <span className='text-center' >This is a NEXTjs project with basic implemation.</span><br />
+                            <span>Click on any user to chat</span>
+                        </div>
                     </div>
                     :
                     <div className='border h-[80vh]  relative'>
