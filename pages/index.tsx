@@ -2,6 +2,7 @@ import { useEffect, useState } from "react"
 import Chatbox from "@/components/chatbox"
 import Userlist from "@/components/userlist"
 import Head from "next/head"
+import client from "@/databse/axious"
 import conMongo from "@/databse/conn"
 import fetchapi from "@/pages/api/fetch"
 import Modal from "@/components/modal"
@@ -13,7 +14,7 @@ import cookie from "cookie"
 export default function Home(props: any) {
   const { loguser } = props
   const { user } = loguser
-
+ 
   const userlogin = useSelector((state: any) => state.userid)
   const dispatch = useDispatch()
 
@@ -94,7 +95,7 @@ export async function getServerSideProps(context: any) {
   let fetUsers: any = {}
   //checkauth
   if (cookies) {
-    fetUsers = await fetchapi('/tokenLogin', { token: cookies.usertoken })
+    fetUsers = await client.post('/tokenLogin', { token: cookies.usertoken })
   }
 
 

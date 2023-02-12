@@ -1,8 +1,8 @@
 export default async function fetchapi(api: any, value: any) {
-   
+
     const data = JSON.stringify({ ...value })
-  
-    const res = await fetch(`api/${api}`, {
+    const base = process.env.NODE_ENV === 'production' ? process.env.HOST : 'api'
+    const res = await fetch(`${base}/${api}`, {
         credentials: 'include',
         mode: 'cors',
         method: 'POST',
