@@ -75,7 +75,7 @@ export default function Home(props: any) {
               <div className="col-span-3 md:col-span-2 static md:relative">
                 <span className="grid grid-cols-3 static md:absolute bottom-[0vh] w-full">
                   <div className="col-span-3 md:col-span-2 flex w-auto border">
-                    <input name="search" placeholder="Enter name or Userid" autoComplete="off" onKeyUp={(e) => userStopped(e)} className="px-4 border-4 border-indigo-50 w-full focus:outline-none" />
+                    <input name="search" placeholder="Enter name or Userid" autoComplete="off" onKeyUp={(e) => userStopped(e)} className="px-4 border-3 md:border-4 border-indigo-50 w-full focus:outline-none" />
                     <button className="bg-indigo-50 hidden md:block w-20">Search</button>
                   </div>
                   <div className="col-span-3 hidden md:col-span-1 md:block cursor-pointer ">
