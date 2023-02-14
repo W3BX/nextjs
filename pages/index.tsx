@@ -9,6 +9,9 @@ import { useDispatch, useSelector } from "react-redux"
 import { loginUser, logoutUser } from "@/redux/slice/userslice"
 import cookie from "cookie"
 import SearchList from "@/components/serachlist"
+import { CgSpinner } from "react-icons/cg"
+
+
 
 export default function Home(props: any) {
 
@@ -20,6 +23,7 @@ export default function Home(props: any) {
 
   const [modal, setmodal] = useState(false)
   const [searchedUser, setsearchedUser] = useState([])
+  const [loading, setloading] = useState(false)
   let wait: any
 
   useEffect(() => {
@@ -35,6 +39,7 @@ export default function Home(props: any) {
     clearTimeout(wait)
 
     if (value.length >= 2) {
+      setloading(true)
       wait = setTimeout(() => { serachUser(e) }, 500)
     } else if (value.length < 2) {
       setsearchedUser([])
@@ -49,6 +54,7 @@ export default function Home(props: any) {
       setsearchedUser(fetchUsers.data)
     }
     clearTimeout(wait);
+    setloading(false)
   }
 
   const logout = async () => {
@@ -73,9 +79,12 @@ export default function Home(props: any) {
             <span className="my-0 py-0 flex grid grid-cols-3 ">
               <p className="capitalize font-bold text-[3rem] mx-2 col-span-3 md:col-span-1">Chatbat</p>
               <div className="col-span-3 md:col-span-2 static md:relative">
-                <span className="grid grid-cols-3 static md:absolute bottom-[0vh] w-full">
+                <span className="grid grid-cols-3 static md:absolute bottom-[0vh] w-full ">
                   <div className="col-span-3 md:col-span-2 flex w-auto border">
-                    <input name="search" placeholder="Enter name or Userid" autoComplete="off" onKeyUp={(e) => userStopped(e)} className="px-4 border-3 md:border-4 border-indigo-50 w-full focus:outline-none" />
+                    <span className="border-3 md:border-4 border-indigo-50 w-full flex">
+                      <input name="search" placeholder={`Enter name or Userid`} autoComplete="off" onKeyUp={(e) => userStopped(e)} className="w-full px-4 focus:outline-none" />
+                      {loading && <CgSpinner size={30} className="animate-spin self-center mx-2"/>}
+                    </span>
                     <button className="bg-indigo-50 hidden md:block w-20">Search</button>
                   </div>
                   <div className="col-span-3 hidden md:col-span-1 md:block cursor-pointer ">
@@ -83,7 +92,7 @@ export default function Home(props: any) {
                   </div>
                   <div className="col-span-3 md:col-span-2  w-auto relative">
                     <div className="absolute w-full">
-                      {searchedUser.length >= 1 && <SearchList users={searchedUser} />}
+                      {<SearchList users={searchedUser} />}
                     </div>
                   </div>
                 </span>

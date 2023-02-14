@@ -2,6 +2,7 @@ import { useState, useEffect } from "react"
 import fetchapi from "@/pages/api/fetch"
 import { loginUser } from "@/redux/slice/userslice"
 import { useDispatch, useSelector } from "react-redux"
+import {GiBatMask} from "react-icons/gi"
 
 type Props = {
     isopen: boolean,
@@ -15,6 +16,7 @@ const Modal = (props: Props) => {
     const [username, setusername] = useState('')
     const [password, setpassword] = useState('')
     const [errorMsg, seterrorMsg] = useState('')
+    const [loading, setloading] = useState(false)
 
     useEffect(() => {
         seterrorMsg('')
@@ -22,6 +24,7 @@ const Modal = (props: Props) => {
 
 
     const submit = async (e: any) => {
+        setloading(true)
         seterrorMsg('')
         const saveUser = await fetchapi(`loginUser`, { un: username, pss: password })
         if (saveUser.status == 200) {
@@ -36,6 +39,7 @@ const Modal = (props: Props) => {
         } else if (saveUser.status == 400) {
             seterrorMsg(saveUser.msg)
         }
+        setloading(false)
     }
 
     const autogenrate = () => {
@@ -55,10 +59,12 @@ const Modal = (props: Props) => {
                 <br />
                 <input name="pass" value={password} className="border-2 border-sky-100  w-full p-3 rounded-lg my-1" onChange={(e) => setpassword(e.target.value)} placeholder="Enter password" />
                 <br />
-                <input name="submit" type="submit" disabled={!username || !password} className={`border px-4 py-2 mx-auto my-4 cursor-pointer bg-black text-white ${!username || !password ? 'opacity-50 cursor-not-allowed' : 'opacity-1'}`} onClick={(e) => submit(e)} />
+                <button name="submit" type="submit" disabled={!username || !password || loading} className={`${loading ? `animate-pulse` : ``} border px-4 py-2 mx-auto my-4 w-[30%] cursor-pointer bg-black text-white text-center ${!username || !password ? 'opacity-50 cursor-not-allowed' : 'opacity-1'}`} onClick={(e) => submit(e)} >
+                    {loading ? <GiBatMask size={20} className="mx-auto" /> : `Submit`}
+                </button>
                 <br />
                 {errorMsg && <><span className="text-rose-700">{errorMsg}</span><br /></>}
-                
+
                 <span className="font-sans text-sm select-none">
                     No need to register just enter any username & password
                     <br />
