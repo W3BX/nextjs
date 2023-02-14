@@ -8,17 +8,18 @@ import Modal from "@/components/modal"
 import { useDispatch, useSelector } from "react-redux"
 import { loginUser, logoutUser } from "@/redux/slice/userslice"
 import cookie from "cookie"
-
+import SearchList from "@/components/serachlist"
 
 export default function Home(props: any) {
 
 
   const { loguser } = props
   const { user } = loguser
-  const userlogin = useSelector((state: any) => state.userid)
+  const userlogin = useSelector((state: any) => state.user)
   const dispatch = useDispatch()
 
   const [modal, setmodal] = useState(false)
+  const [searchedUser, setsearchedUser] = useState([])
   let wait: any
 
   useEffect(() => {
@@ -29,17 +30,25 @@ export default function Home(props: any) {
 
 
   const userStopped = (e: any) => {
-    clearTimeout(wait);
-    wait = setTimeout(() => { serachUser(e) }, 1000)
+    let value = e.target.value
+
+    clearTimeout(wait)
+
+    if (value.length >= 2) {
+      wait = setTimeout(() => { serachUser(e) }, 500)
+    } else if (value.length < 2) {
+      setsearchedUser([])
+    }
+
   }
 
   const serachUser = async (e: any) => {
     let value = e.target.value
-
-    if (value.length >= 2) {
-      const fetUsers = await fetchapi(`searchUser`, { value: value })
-      clearTimeout(wait);
+    const fetchUsers = await fetchapi(`searchUser`, { value: value })
+    if (fetchUsers.data.length) {
+      setsearchedUser(fetchUsers.data)
     }
+    clearTimeout(wait);
   }
 
   const logout = async () => {
@@ -51,7 +60,6 @@ export default function Home(props: any) {
 
 
   }
-
 
   return (
     <>
@@ -67,11 +75,16 @@ export default function Home(props: any) {
               <div className="col-span-3 md:col-span-2 static md:relative">
                 <span className="grid grid-cols-3 static md:absolute bottom-[0vh] w-full">
                   <div className="col-span-3 md:col-span-2 flex w-auto border">
-                    <input name="search" placeholder="Enter name or Userid" onKeyUp={(e) => userStopped(e)} className="px-4 border-4 border-indigo-50 w-full" />
+                    <input name="search" placeholder="Enter name or Userid" autoComplete="off" onKeyUp={(e) => userStopped(e)} className="px-4 border-4 border-indigo-50 w-full focus:outline-none" />
                     <button className="bg-indigo-50 hidden md:block w-20">Search</button>
                   </div>
                   <div className="col-span-3 hidden md:col-span-1 md:block cursor-pointer ">
                     <span className="border float-right px-7 py-4 bg-black text-white" onClick={() => !userlogin.userloggedin ? setmodal(true) : logout()} >{userlogin.userloggedin ? "Logout" : "Login"}</span>
+                  </div>
+                  <div className="col-span-3 md:col-span-2  w-auto relative">
+                    <div className="absolute w-full">
+                      {searchedUser.length >= 1 && <SearchList users={searchedUser} />}
+                    </div>
                   </div>
                 </span>
               </div>
@@ -90,14 +103,12 @@ export default function Home(props: any) {
 export async function getServerSideProps(context: any) {
 
   const cookies = cookie.parse(context.req.headers.cookie || '');
-  //Esatablishing mongo connection
 
   let fetUsers: any = {}
   //checkauth
   if (cookies) {
     fetUsers = await client.post('/tokenLogin', { token: cookies.usertoken })
   }
-
 
   return { props: { loguser: fetUsers.data } }
 }

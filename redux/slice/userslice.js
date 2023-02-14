@@ -6,7 +6,8 @@ const userslice = createSlice({
     name: "user",
     initialState: {
         userloggedin: false,
-        username: ''
+        username: '',
+        chats: []
     },
     reducers: {
         startChat(state, action) {
@@ -20,10 +21,13 @@ const userslice = createSlice({
         logoutUser(state, action) {
             state.username = ''
             state.userloggedin = false
+        },
+        addChat(state, action) {
+            state.chats = [...state.chats, action.payload]
         }
     }
 })
 
-export const { startChat, loginUser, logoutUser } = userslice.actions
+export const { startChat, loginUser, logoutUser, addChat } = userslice.actions
 
 export default userslice.reducer

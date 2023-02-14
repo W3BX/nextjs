@@ -19,8 +19,15 @@ export default async function handler(req: any, res: any) {
 
     //searchUsers
     if (opType == 'searchUser') {
-        const findUser = await User.find({ $or: [{ 'name': { $regex: value, $options: "i" } }, { 'uID': { $regex: value, $options: "i" } }] })
-        response.data = findUser
+
+        try {
+            const getcookie = getCookie('usertoken', { req, res })
+            const findUser = await User.find({ $or: [{ 'uID': { '$nin': getcookie }, 'name': { $regex: value, $options: "i" } }, { 'uID': { $regex: value, $options: "i" } }] }, { 'uID': 1, 'name': 1 })
+            response.data = findUser
+        } catch (e) {
+            console.log(e)
+        }
+
     }
 
     //Login users if token avaliable
