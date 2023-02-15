@@ -5,3 +5,7 @@
 .scrollbar-hide::-webkit-scrollbar {
     display: none;
 }
+
+.searchList{
+    z-index: 100;
+}

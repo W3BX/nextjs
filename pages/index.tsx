@@ -11,8 +11,6 @@ import cookie from "cookie"
 import SearchList from "@/components/serachlist"
 import { CgSpinner } from "react-icons/cg"
 
-
-
 export default function Home(props: any) {
 
 
@@ -20,11 +18,25 @@ export default function Home(props: any) {
   const { user } = loguser
   const userlogin = useSelector((state: any) => state.user)
   const dispatch = useDispatch()
-
   const [modal, setmodal] = useState(false)
   const [searchedUser, setsearchedUser] = useState([])
   const [loading, setloading] = useState(false)
+  const [searchresult, setsearchresult] = useState(false)
+  const [logoutLoading, setlogoutLoading] = useState(false)
+
   let wait: any
+
+  useEffect(() => {
+
+    const autologout = async () => {
+      const fetchUsers = await fetchapi(`autoLogout`, { value: '' })
+    }
+
+    window.addEventListener('beforeunload', autologout);
+    return () => {
+      window.removeEventListener('beforeunload', autologout);
+    };
+  }, []);
 
   useEffect(() => {
     if (user) {
@@ -35,7 +47,7 @@ export default function Home(props: any) {
 
   const userStopped = (e: any) => {
     let value = e.target.value
-
+    setsearchresult(true)
     clearTimeout(wait)
 
     if (value.length >= 2) {
@@ -43,6 +55,7 @@ export default function Home(props: any) {
       wait = setTimeout(() => { serachUser(e) }, 500)
     } else if (value.length < 2) {
       setsearchedUser([])
+      setsearchresult(false)
     }
 
   }
@@ -58,10 +71,11 @@ export default function Home(props: any) {
   }
 
   const logout = async () => {
-
+    setlogoutLoading(true)
     const logouttUsers = await fetchapi(`tokenLogout`, { value: "" })
     if (logouttUsers.status == 200) {
       dispatch(logoutUser({ set: false }))
+      setlogoutLoading(false)
     }
 
 
@@ -73,7 +87,7 @@ export default function Home(props: any) {
         <title>Chatbat</title>
       </Head>
       <div className="container mx-auto">
-        {modal && <Modal isopen={modal} setmodal={setmodal} />}
+        {modal && <Modal isopen={modal} setmodal={setmodal} setsearchresult={setsearchresult} />}
         <div className="grid grid-cols-3 mx-10 h-[90vh]">
           <span className="col-span-3 mb-[0.5rem]">
             <span className="my-0 py-0 flex grid grid-cols-3 ">
@@ -82,19 +96,25 @@ export default function Home(props: any) {
                 <span className="grid grid-cols-3 static md:absolute bottom-[0vh] w-full ">
                   <div className="col-span-3 md:col-span-2 flex w-auto border">
                     <span className="border-3 md:border-4 border-indigo-50 w-full flex">
-                      <input name="search" placeholder={`Enter name or Userid`} autoComplete="off" onKeyUp={(e) => userStopped(e)} className="w-full px-4 focus:outline-none" />
-                      {loading && <CgSpinner size={30} className="animate-spin self-center mx-2"/>}
+                      <input name="search" id='search' placeholder={`Enter name or Userid`} autoComplete="off" onKeyUp={(e) => userStopped(e)} className="w-full px-4 focus:outline-none" />
+                      {loading && <CgSpinner size={30} className="animate-spin self-center mx-2" />}
                     </span>
                     <button className="bg-indigo-50 hidden md:block w-20">Search</button>
                   </div>
                   <div className="col-span-3 hidden md:col-span-1 md:block cursor-pointer ">
-                    <span className="border float-right px-7 py-4 bg-black text-white" onClick={() => !userlogin.userloggedin ? setmodal(true) : logout()} >{userlogin.userloggedin ? "Logout" : "Login"}</span>
+                    <span className="border float-right px-7 py-4 bg-black text-white" onClick={() => !userlogin.userloggedin ? setmodal(true) : logout()} >
+                      {userlogin.userloggedin ? logoutLoading ? "..." : "Logout" : "Login"}
+                    </span>
                   </div>
-                  <div className="col-span-3 md:col-span-2  w-auto relative">
-                    <div className="absolute w-full">
-                      {<SearchList users={searchedUser} />}
+                  {searchresult && <div className="col-span-3 md:col-span-2  w-auto relative">
+                    <div className="absolute w-full z-100 searchList">
+                      <SearchList
+                        users={searchedUser}
+                        setsearchedUser={setsearchedUser}
+                        setmodal={setmodal}
+                        setsearchresult={setsearchresult} />
                     </div>
-                  </div>
+                  </div>}
                 </span>
               </div>
             </span>

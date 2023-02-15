@@ -6,14 +6,14 @@ import { GiBatWing } from "react-icons/gi"
 type Props = {}
 
 const Chatbox = (props: Props) => {
-    const userid = useSelector((state: any) => state.userid)
+    const activeChat = useSelector((state: any) => state.user.activeChat)
 
     return (
         <>
             <div className='container'>
-                {true ?
+                {Object.keys(activeChat).length === 0 ?
                     <div className='flex items-center justify-center h-[80vh]'>
-                        <div  className='text-center'>
+                        <div className='text-center'>
                             <span className='flex text-[3rem] '>
                                 Welcome to  <GiBatWing />Chatbat<GiBatWing style={{ transform: "scaleX(-1)" }} />
                             </span>
@@ -24,7 +24,7 @@ const Chatbox = (props: Props) => {
                     :
                     <div className='border h-[80vh]  relative'>
                         <div className='border py-5 capitalize px-2 font-mono text-2xl font-bold '>
-                            {userid.name}
+                            {activeChat.name}
                         </div>
                         <div className='h-[3rem] mx-2 absolute bottom-[1vh] w-[98%]'>
                             <input
@@ -34,8 +34,6 @@ const Chatbox = (props: Props) => {
                         </div>
                     </div>
                 }
-
-
             </div>
         </>
 

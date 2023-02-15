@@ -2,16 +2,12 @@ import { useState, useEffect } from "react"
 import fetchapi from "@/pages/api/fetch"
 import { loginUser } from "@/redux/slice/userslice"
 import { useDispatch, useSelector } from "react-redux"
-import {GiBatMask} from "react-icons/gi"
+import { GiBatMask } from "react-icons/gi"
 
-type Props = {
-    isopen: boolean,
-    setmodal: Function
-}
 
-const Modal = (props: Props) => {
+const Modal = (props: any) => {
 
-    const { isopen, setmodal } = props
+    const { isopen, setmodal, setsearchresult } = props
     const dispatch = useDispatch()
     const [username, setusername] = useState('')
     const [password, setpassword] = useState('')
@@ -40,6 +36,9 @@ const Modal = (props: Props) => {
             seterrorMsg(saveUser.msg)
         }
         setloading(false)
+        setsearchresult(false)
+        let doc: any = document.getElementById('search')
+        doc.value = ''
     }
 
     const autogenrate = () => {

@@ -35,6 +35,12 @@ export default async function handler(req: any, res: any) {
         if (token) {
             const userfind = await User.findOne({ "uID": token })
             if (userfind) {
+                const tokenUpdated = await User.updateOne({ "uID": token },
+                    {
+                        $set: {
+                            loggedIn: true
+                        }
+                    })
                 response.user = userfind.name
             } else {
                 response.status = 400
@@ -64,6 +70,22 @@ export default async function handler(req: any, res: any) {
             }
         }
         res.msg = 'userloggedout'
+    }
+
+    //autologout
+    if (opType == 'autoLogout') {
+        if (hasCookie('usertoken'), { req, res }) {
+            const getcookie = getCookie('usertoken', { req, res })
+            const tokenUpdated = await User.updateOne({ "uID": getcookie },
+                {
+                    $set: {
+                        loggedIn: false
+                    }
+                })
+            if (tokenUpdated) {
+                res.msg = 'userloggedout'
+            }
+        }
     }
 
     //login user if not exits register and then login
