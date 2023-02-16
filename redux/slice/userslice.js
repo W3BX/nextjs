@@ -5,8 +5,10 @@ import fetchapi from "@/pages/api/fetch";
 const intState = {
     userloggedin: false,
     username: '',
+    uid: '',
     chats: [],
-    activeChat: {}
+    activeChat: {},
+    chatID: '',
 }
 
 const userslice = createSlice({
@@ -22,7 +24,9 @@ const userslice = createSlice({
         loginUser(state, action) {
             return {
                 ...state,
-                username: action.payload,
+                username: action.payload.user,
+                uid: action.payload.uid,
+                chatID: action.payload.chatID,
                 userloggedin: true
             }
         },
@@ -30,9 +34,12 @@ const userslice = createSlice({
             return {
                 ...state,
                 username: '',
+                uid: '',
+                chatID: '',
                 userloggedin: false,
                 activeChat: {},
-                chats: []
+                chats: [],
+                chatSet: []
             }
         },
         addChat(state, action) {
@@ -46,6 +53,6 @@ const userslice = createSlice({
     }
 })
 
-export const { startChat, loginUser, logoutUser, addChat } = userslice.actions
+export const { startChat, loginUser, logoutUser, addChat, chatSet } = userslice.actions
 
 export default userslice.reducer

@@ -24,9 +24,8 @@ const Modal = (props: any) => {
         seterrorMsg('')
         const saveUser = await fetchapi(`loginUser`, { un: username, pss: password })
         if (saveUser.status == 200) {
-
             if (saveUser.name) {
-                dispatch(loginUser(saveUser.name))
+                dispatch(loginUser({ user: saveUser.name, uid: saveUser.uid, chatID: saveUser.chatID }))
             }
             setusername('')
             setpassword('')

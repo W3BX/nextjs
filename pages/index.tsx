@@ -13,9 +13,8 @@ import { CgSpinner } from "react-icons/cg"
 
 export default function Home(props: any) {
 
-
   const { loguser } = props
-  const { user } = loguser
+  const { user, uid } = loguser
   const userlogin = useSelector((state: any) => state.user)
   const dispatch = useDispatch()
   const [modal, setmodal] = useState(false)
@@ -38,9 +37,10 @@ export default function Home(props: any) {
     };
   }, []);
 
+
   useEffect(() => {
-    if (user) {
-      dispatch(loginUser(user))
+    if (user && uid) {
+      dispatch(loginUser(loguser))
     }
   }, [user])
 
@@ -134,6 +134,7 @@ export async function getServerSideProps(context: any) {
   const cookies = cookie.parse(context.req.headers.cookie || '');
 
   let fetUsers: any = {}
+
   //checkauth
   if (cookies) {
     fetUsers = await client.post('/tokenLogin', { token: cookies.usertoken })

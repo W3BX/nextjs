@@ -17,7 +17,7 @@ const Userlist = (props: Props) => {
         chats.length ?
           chats.map((data: any, index: any) => {
             return (
-              <div className='border container cursor-pointer' key={index} onClick={() => dispatch(startChat({ uID: data.uID, name: data.name }))}>
+              <div className='border container cursor-pointer' key={index} onClick={() => dispatch(startChat({ uID: data.uID, name: data.name, chatID:data.chatID }))}>
                 <div className='my-4 mx-3 w-[fit-content] flex'>
                   <div className='px-3 py-1 border border-4 rounded-full uppercase m-auto'>{data.name.charAt(0)}</div>
                   <div className='mx-4 my-auto capitalize text-[1.3rem]'>{data.name}</div>

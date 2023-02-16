@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import Image from 'next/image'
 import { useSelector, useDispatch } from "react-redux"
 import { GiBatWing } from "react-icons/gi"
@@ -6,7 +6,15 @@ import { GiBatWing } from "react-icons/gi"
 type Props = {}
 
 const Chatbox = (props: Props) => {
+
     const activeChat = useSelector((state: any) => state.user.activeChat)
+    const sender = useSelector((state: any) => state.user)
+    const dispatch = useDispatch()
+
+    //sender
+    const [msginput, setmsginput] = useState('')
+    const [recivedMsg, setrecivedMsg] = useState('')
+
 
     return (
         <>
@@ -26,11 +34,14 @@ const Chatbox = (props: Props) => {
                         <div className='border py-5 capitalize px-2 font-mono text-2xl font-bold '>
                             {activeChat.name}
                         </div>
-                        <div className='h-[3rem] mx-2 absolute bottom-[1vh] w-[98%]'>
+                        <div className='h-[3rem] mx-2 absolute border border-2 bottom-[1vh] w-[98%] flex'>
                             <input
-                                className='w-full h-full border border-2 rounded-[12px] px-3 focus:outline-none focus:border-sky-500 placeholder:text-slate-400'
+                                className='w-full h-full px-3 focus:outline-none focus:border-sky-500 placeholder:text-slate-400'
                                 placeholder='Type...'
+                                value={msginput}
+                                onChange={(e) => setmsginput(e.target.value)}
                             />
+                            <span className='border p-2' onClick={() => null } >Submit</span>
                         </div>
                     </div>
                 }

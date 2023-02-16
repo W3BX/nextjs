@@ -4,7 +4,8 @@ const userSchema = new Schema({
     name: { type: String },
     password: { type: String },
     uID: { type: String },
-    loggedIn: { type: Boolean }
+    loggedIn: { type: Boolean },
+    chatID: { type: String },
 })
 
 let User = models.users || model('users', userSchema)

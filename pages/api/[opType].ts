@@ -9,9 +9,11 @@ export default async function handler(req: any, res: any) {
 
     let response: any = {
         msg: '',
+        uid: '',
         status: 200,
         data: [],
-        name: ''
+        name: '',
+        chatID:''
     }
 
     const { opType } = req.query
@@ -22,7 +24,7 @@ export default async function handler(req: any, res: any) {
 
         try {
             const getcookie = getCookie('usertoken', { req, res })
-            const findUser = await User.find({ $or: [{ 'uID': { '$nin': getcookie }, 'name': { $regex: value, $options: "i" } }, { 'uID': { $regex: value, $options: "i" } }] }, { 'uID': 1, 'name': 1 })
+            const findUser = await User.find({ $or: [{ 'uID': { '$nin': getcookie }, 'name': { $regex: value, $options: "i" } }, { 'uID': { $regex: value, $options: "i" } }] }, { 'uID': 1, 'name': 1, 'chatID':1 })
             response.data = findUser
         } catch (e) {
             console.log(e)
@@ -42,6 +44,8 @@ export default async function handler(req: any, res: any) {
                         }
                     })
                 response.user = userfind.name
+                response.uid = userfind.uID
+                response.chatID = userfind.chatID
             } else {
                 response.status = 400
                 response.msg = 'User not logged in/ Another device log in'
@@ -101,9 +105,11 @@ export default async function handler(req: any, res: any) {
         } else {
             if (!userfind) {
 
-                const usersave = new User({ name: un, password: pss, uID: uID, loggedIn: true })
+                const usersave = new User({ name: un, password: pss, uID: uID, loggedIn: true, chatID: uID })
                 const save = await usersave.save()
                 response.name = save.name
+                response.uid = save.uID
+                response.chatID = save.chatID
                 response.msg = 'User registered and ready to login'
                 setCookie('usertoken', uID, { req, res, maxAge: 1000 * 60 * 15, httpOnly: true })
 
@@ -122,6 +128,8 @@ export default async function handler(req: any, res: any) {
                             }
                         })
                     response.name = userfind.name
+                    response.uid = userfind.uID
+                    response.chatID = userfind.chatID
                 }
             }
         }
